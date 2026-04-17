@@ -168,7 +168,9 @@
 
     const viewer = document.getElementById('viewer');
     const status = document.getElementById('status');
-
+    let currentModel = null;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b1220);
 
