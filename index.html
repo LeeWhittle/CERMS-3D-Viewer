@@ -127,6 +127,21 @@
     }
 
     canvas{display:block}
+    #tools button {
+  display:block;
+  width:100%;
+  margin-top:6px;
+  padding:6px;
+  border:none;
+  border-radius:6px;
+  background:#1e2a44;
+  color:white;
+  cursor:pointer;
+}
+
+#tools button.active {
+  background:#5aa9ff;
+}
   </style>
 
   <script type="importmap">
@@ -156,7 +171,20 @@
       </p>
     </div>
   </div>
+<div class="help">
+  <p class="help-title">Controls</p>
+  <p class="help-text">
+    Left drag to rotate<br>
+    Right drag to pan<br>
+    Mouse wheel to zoom
+  </p>
+</div>
 
+<div class="help" id="tools">
+  <p class="help-title">Tools</p>
+  <button id="measureBtn">📏 Measure</button>
+  <button id="panBtn">🖐 Pan</button>
+</div>
   <div class="status" id="status">
     <span class="legend-dot"></span><strong>Loading model…</strong>
   </div>
@@ -168,9 +196,24 @@
 
     const viewer = document.getElementById('viewer');
     const status = document.getElementById('status');
+    const measureBtn = document.getElementById('measureBtn');
+const panBtn = document.getElementById('panBtn');
+
+measureBtn.onclick = () => {
+  toolMode = "measure";
+  measureBtn.classList.add("active");
+  panBtn.classList.remove("active");
+};
+
+panBtn.onclick = () => {
+  toolMode = "pan";
+  panBtn.classList.add("active");
+  measureBtn.classList.remove("active");
+};
     let currentModel = null;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+    let toolMode = "pan";
     let measurePoints = [];
 let measureMarkers = [];
 let measureLine = null;
@@ -244,7 +287,7 @@ let measureLine = null;
       }
     );
     window.addEventListener('click', (event) => {
-  if (!currentModel) return;
+  if (!currentModel || toolMode !== "measure") return;
 
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -284,7 +327,7 @@ if (measurePoints.length === 2) {
 
   status.innerHTML =
     '<span class="legend-dot"></span><strong>Distance:</strong> ' +
-    distance.toFixed(3) + ' units';
+    (distance).toFixed(3) + ' m';
 }
 const offset = currentModel.userData.originalCenter || { x: 0, y: 0, z: 0 };
 
