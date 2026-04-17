@@ -205,6 +205,7 @@ const mouse = new THREE.Vector2();
       'https://pub-2d755f56a3cb4c47af31c44e310ef006.r2.dev/model.glb',
       function (gltf) {
         const model = gltf.scene;
+        currentModel = model;
         scene.add(model);
 
         const box = new THREE.Box3().setFromObject(model);
