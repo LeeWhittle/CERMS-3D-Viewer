@@ -255,6 +255,37 @@ let measureLine = null;
 
   if (hits.length > 0) {
     const p = hits[0].point;
+    if (measurePoints.length === 2) {
+  measurePoints = [];
+  measureMarkers.forEach(marker => scene.remove(marker));
+  measureMarkers = [];
+  if (measureLine) {
+    scene.remove(measureLine);
+    measureLine = null;
+  }
+}
+
+measurePoints.push(p.clone());
+
+const markerGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x5aa9ff });
+const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+marker.position.copy(p);
+scene.add(marker);
+measureMarkers.push(marker);
+
+if (measurePoints.length === 2) {
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints(measurePoints);
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x7ce3c3 });
+  measureLine = new THREE.Line(lineGeometry, lineMaterial);
+  scene.add(measureLine);
+
+  const distance = measurePoints[0].distanceTo(measurePoints[1]);
+
+  status.innerHTML =
+    '<span class="legend-dot"></span><strong>Distance:</strong> ' +
+    distance.toFixed(3) + ' units';
+}
 const offset = currentModel.userData.originalCenter || { x: 0, y: 0, z: 0 };
 
 const realX = p.x + offset.x;
