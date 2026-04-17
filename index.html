@@ -237,7 +237,24 @@ const mouse = new THREE.Vector2();
         status.innerHTML = '<span class="legend-dot"></span><strong>Error loading model</strong>';
       }
     );
+    window.addEventListener('click', (event) => {
+  if (!currentModel) return;
 
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const hits = raycaster.intersectObject(currentModel, true);
+
+  if (hits.length > 0) {
+    const p = hits[0].point;
+    status.innerHTML =
+      '<span class="legend-dot"></span><strong>X:</strong> ' + p.x.toFixed(3) +
+      ' <strong>Y:</strong> ' + p.y.toFixed(3) +
+      ' <strong>Z:</strong> ' + p.z.toFixed(3);
+  }
+});
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
