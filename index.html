@@ -213,6 +213,9 @@ const mouse = new THREE.Vector2();
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z) || 1;
 
+        const originalCenter = center.clone();
+        model.userData.originalCenter = originalCenter;
+
         model.position.sub(center);
 
         const distance = maxDim * 2.3;
@@ -249,10 +252,16 @@ const mouse = new THREE.Vector2();
 
   if (hits.length > 0) {
     const p = hits[0].point;
-    status.innerHTML =
-      '<span class="legend-dot"></span><strong>X:</strong> ' + p.x.toFixed(3) +
-      ' <strong>Y:</strong> ' + p.y.toFixed(3) +
-      ' <strong>Z:</strong> ' + p.z.toFixed(3);
+const offset = currentModel.userData.originalCenter || { x: 0, y: 0, z: 0 };
+
+const realX = p.x + offset.x;
+const realY = p.y + offset.y;
+const realZ = p.z + offset.z;
+
+status.innerHTML =
+  '<span class="legend-dot"></span><strong>X:</strong> ' + realX.toFixed(3) +
+  ' <strong>Y:</strong> ' + realY.toFixed(3) +
+  ' <strong>Z:</strong> ' + realZ.toFixed(3);
   }
 });
     window.addEventListener('resize', () => {
